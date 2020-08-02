@@ -32,6 +32,8 @@
     "test": "npm run test:coverage",
     "prepare": "npm run build",
     "release": "standard-version",
+    "prepublishOnly": "npm run build",
+    "postversion": "git push --follow-tags",
     "defaults": "webpack-defaults"
   },
   "files": [
