@@ -1,12 +1,12 @@
 {
-  "name": "terser-webpack-plugin",
-  "version": "3.0.8",
-  "description": "Terser plugin for webpack",
+  "name": "tsterser-webpack-plugin",
+  "version": "0.0.0",
+  "description": "TS-Terser plugin for webpack",
   "license": "MIT",
-  "repository": "webpack-contrib/terser-webpack-plugin",
+  "repository": "banyudu/tsterser-webpack-plugin",
   "author": "webpack Contrib Team",
-  "homepage": "https://github.com/webpack-contrib/terser-webpack-plugin",
-  "bugs": "https://github.com/webpack-contrib/terser-webpack-plugin/issues",
+  "homepage": "https://github.com/banyudu/tsterser-webpack-plugin",
+  "bugs": "https://github.com/banyudu/tsterser-webpack-plugin/issues",
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/webpack"
