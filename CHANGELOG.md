@@ -2,6 +2,96 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.1.0 (2020-08-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* use `optimizeAssets` for webpack@5
+* the `chunkFilter` was removed, please use `test`/`include`/`exclude` options
+* if the value from the `extractComments.filename` option conflicts with existing assets, an error will be thrown instead of a warning
+* change arguments order for the `warningFilter` option from `Function<(warning, file, source) -> Boolean>` to `Function<(file, warning, source) -> Boolean>`
+* when the `extractComments.filename` option is a function it pass only one argument and it is object with `filename`, `basename`, `query` and `hash` properties
+* **deps:** minimum supported Node.js version is `10.13`
+* the `extractComments` option is `true` by default
+* the `cache` option is `true` by default
+* the `parallel` option is `true` by default
+* using the `extractComments.condition` option with `true` value extract only `some` comments
+* **defaults:** minimum require Node.js version is `8.9.0`
+
+### Features
+
+* `chunkFilter` option for filtering chunks ([#38](https://github.com/banyudu/tsterser-webpack-plugin/issues/38)) ([7ffe57c](https://github.com/banyudu/tsterser-webpack-plugin/commit/7ffe57cadc542cb7771b56066abb63ad9e54bae5))
+* emit warning when comment file conlict with an existing asset ([#156](https://github.com/banyudu/tsterser-webpack-plugin/issues/156)) ([2b4d2a4](https://github.com/banyudu/tsterser-webpack-plugin/commit/2b4d2a45fb6495483f8546546d3667fdde75c794))
+* enable the cache option by default ([#132](https://github.com/banyudu/tsterser-webpack-plugin/issues/132)) ([960d249](https://github.com/banyudu/tsterser-webpack-plugin/commit/960d24924c6776126ad0568e729ad9433ce8c636))
+* enable the extractComments option by default ([ad2471c](https://github.com/banyudu/tsterser-webpack-plugin/commit/ad2471c4c09afe25fd3cfab2500f64588acaf0dd))
+* enable the parallel option by default ([#131](https://github.com/banyudu/tsterser-webpack-plugin/issues/131)) ([7b342af](https://github.com/banyudu/tsterser-webpack-plugin/commit/7b342af008e6dba050ad21de366cbc201262bc82))
+* full coverage schema options validation ([#8](https://github.com/banyudu/tsterser-webpack-plugin/issues/8)) ([68e531e](https://github.com/banyudu/tsterser-webpack-plugin/commit/68e531eb095b3ec9268511caccda6e7615ad163b))
+* generate higher quality SourceMaps ([#109](https://github.com/banyudu/tsterser-webpack-plugin/issues/109)) ([9d777f0](https://github.com/banyudu/tsterser-webpack-plugin/commit/9d777f09d1eeebbedb428948d592bf7fe258a8c9))
+* improve naming of extracted file with comments ([#154](https://github.com/banyudu/tsterser-webpack-plugin/issues/154)) ([5fe3337](https://github.com/banyudu/tsterser-webpack-plugin/commit/5fe333783db1e2e34778e25aa518b3598cba13e0))
+* map `webpack@5` options to `terser` options ([#177](https://github.com/banyudu/tsterser-webpack-plugin/issues/177)) ([f4c47aa](https://github.com/banyudu/tsterser-webpack-plugin/commit/f4c47aa0e3de27bbab3ae0a90a461841bbce5988))
+* pass asset path for warningsFilter ([#176](https://github.com/banyudu/tsterser-webpack-plugin/issues/176)) ([9a0a575](https://github.com/banyudu/tsterser-webpack-plugin/commit/9a0a575585be21118cb4e3611d30e665a6337c3d))
+* propagate an error stacktrace from `terser` ([#179](https://github.com/banyudu/tsterser-webpack-plugin/issues/179)) ([a11e66b](https://github.com/banyudu/tsterser-webpack-plugin/commit/a11e66b17ae2bb146ded4e64c948d5eece834378))
+* respect `devtool` values for source map generation ([#140](https://github.com/banyudu/tsterser-webpack-plugin/issues/140)) ([dd37ca1](https://github.com/banyudu/tsterser-webpack-plugin/commit/dd37ca11ce6b0c89ed1a4491acee279c0f57db89))
+* respect `SourceMapDevToolPlugin` plugin for `sourceMap` option ([#178](https://github.com/banyudu/tsterser-webpack-plugin/issues/178)) ([d01c1b5](https://github.com/banyudu/tsterser-webpack-plugin/commit/d01c1b5fef7f0593c91c1be3d4eb36220c3f465d))
+* support webpack@5 cache ([3649b3d](https://github.com/banyudu/tsterser-webpack-plugin/commit/3649b3d0bf697288661676b47b33ae88226eb6f5))
+* uglify `mjs` by default ([#39](https://github.com/banyudu/tsterser-webpack-plugin/issues/39)) ([1644620](https://github.com/banyudu/tsterser-webpack-plugin/commit/1644620e99c6e35ae9f5dab7a074be1cbb8f94c5))
+* update terser to 4 version ([#97](https://github.com/banyudu/tsterser-webpack-plugin/issues/97)) ([15d1595](https://github.com/banyudu/tsterser-webpack-plugin/commit/15d159517b5599c07f2ec93a1b84e687a2fe9b43))
+
+
+### Bug Fixes
+
+* `chunks` is a `Set` in webpack@5 ([#19](https://github.com/banyudu/tsterser-webpack-plugin/issues/19)) ([df8c425](https://github.com/banyudu/tsterser-webpack-plugin/commit/df8c425dcdb58bc967d3539f28834a543462ab60))
+* `cpus` length in a chroot environment (`os.cpus()`) ([#4](https://github.com/banyudu/tsterser-webpack-plugin/issues/4)) ([9375646](https://github.com/banyudu/tsterser-webpack-plugin/commit/9375646aa85716d88d80db9797fb5cd2e331611f))
+* cannot read property 'minify' of undefined   ([#69](https://github.com/banyudu/tsterser-webpack-plugin/issues/69)) ([0593d7c](https://github.com/banyudu/tsterser-webpack-plugin/commit/0593d7cd336965842a2bd3198a31c88744a67275))
+* catch `work-farm` errors ([#35](https://github.com/banyudu/tsterser-webpack-plugin/issues/35)) ([2bdcd38](https://github.com/banyudu/tsterser-webpack-plugin/commit/2bdcd3895bc8fa5b7bc3770bc04c63575723273f))
+* compatibility with child compilations ([9da4add](https://github.com/banyudu/tsterser-webpack-plugin/commit/9da4add75390a583366b7f030d366c437a52137b))
+* compatibility with webpack@5 ([#250](https://github.com/banyudu/tsterser-webpack-plugin/issues/250)) ([d3ff61c](https://github.com/banyudu/tsterser-webpack-plugin/commit/d3ff61cbb714da8fb6ee1f7659bf6796774ab4cc))
+* correct interpretation url for extracted comment file ([#157](https://github.com/banyudu/tsterser-webpack-plugin/issues/157)) ([aba8ba7](https://github.com/banyudu/tsterser-webpack-plugin/commit/aba8ba7053d28b3e4a3291ec2a285b13f9987fdd))
+* dedupe extracted comments ([#40](https://github.com/banyudu/tsterser-webpack-plugin/issues/40)) ([7f4a159](https://github.com/banyudu/tsterser-webpack-plugin/commit/7f4a15957c98781673246c7454a52f4a4a3e39fa))
+* disable parallel on WSL due bugs ([#90](https://github.com/banyudu/tsterser-webpack-plugin/issues/90)) ([d9533dd](https://github.com/banyudu/tsterser-webpack-plugin/commit/d9533dd365bc63bd9554b21abfba55b8ede2f497))
+* do not break code with shebang ([fac58cb](https://github.com/banyudu/tsterser-webpack-plugin/commit/fac58cb1ee7935710b3b38662c3abbf8dc12a862))
+* do not crash on buffer assets ([3c67023](https://github.com/banyudu/tsterser-webpack-plugin/commit/3c670238952ddd5cbbf17f223e13a921f3b76521))
+* do not run parallel mode when you have only one file ([#134](https://github.com/banyudu/tsterser-webpack-plugin/issues/134)) ([8b88b39](https://github.com/banyudu/tsterser-webpack-plugin/commit/8b88b399cf9c95d7d45e597235d6fa5e5a8aa34c))
+* don't crash when no extracted comments ([#49](https://github.com/banyudu/tsterser-webpack-plugin/issues/49)) ([efad586](https://github.com/banyudu/tsterser-webpack-plugin/commit/efad586b86c6f6e5bd79e8b1bfe1e4447122cb87))
+* extract comment conditions is case insensitivity ([19e1e43](https://github.com/banyudu/tsterser-webpack-plugin/commit/19e1e4336459671b2b9848b3dcf93e381d88466c))
+* fallback for cache directory ([#86](https://github.com/banyudu/tsterser-webpack-plugin/issues/86)) ([3cdd2ed](https://github.com/banyudu/tsterser-webpack-plugin/commit/3cdd2edad1fa995022c76ef4081dfd22f11e7ee8))
+* get rid deprecation warnings for `webpack@5` ([#180](https://github.com/banyudu/tsterser-webpack-plugin/issues/180)) ([504ea8b](https://github.com/banyudu/tsterser-webpack-plugin/commit/504ea8b2017e6fa9b8a5f2123025ee5b7b4d80b1))
+* get rid deprecation warnings for webpack@5 ([#181](https://github.com/banyudu/tsterser-webpack-plugin/issues/181)) ([0e9b780](https://github.com/banyudu/tsterser-webpack-plugin/commit/0e9b780390826a9b9f58368f24b39452ca34f00e))
+* invalidate cache after changing node version ([675edfd](https://github.com/banyudu/tsterser-webpack-plugin/commit/675edfdff1cae6f555521328335a22ad6d9af205))
+* invalidate cache when a file name was changed ([#171](https://github.com/banyudu/tsterser-webpack-plugin/issues/171)) ([7e1d370](https://github.com/banyudu/tsterser-webpack-plugin/commit/7e1d370ce2520c7c23689c19b22cfbea0265957e))
+* license files now have .txt suffix by default ([#210](https://github.com/banyudu/tsterser-webpack-plugin/issues/210)) ([de02f7b](https://github.com/banyudu/tsterser-webpack-plugin/commit/de02f7b229a6ef91baa353681b1c546784672ab6))
+* logic for extracting and preserving comments ([#166](https://github.com/banyudu/tsterser-webpack-plugin/issues/166)) ([6bdee64](https://github.com/banyudu/tsterser-webpack-plugin/commit/6bdee640082a09dcb9d8edb674e553b365365c18))
+* make `extractComments` API more consistent ([#129](https://github.com/banyudu/tsterser-webpack-plugin/issues/129)) ([37d2df0](https://github.com/banyudu/tsterser-webpack-plugin/commit/37d2df01d27d6e59ba0428eefbafbd869e51c002))
+* more consistent cache ([#43](https://github.com/banyudu/tsterser-webpack-plugin/issues/43)) ([36f5f3c](https://github.com/banyudu/tsterser-webpack-plugin/commit/36f5f3ca1e1680e934de9eb06eab2fa0820d8356))
+* multi-compiler crash ([f6499af](https://github.com/banyudu/tsterser-webpack-plugin/commit/f6499afb40f7a3b434c880d555261d62e0de4fd7))
+* parallel in multi compilation mode ([0ee7ed2](https://github.com/banyudu/tsterser-webpack-plugin/commit/0ee7ed270b8cbf6312cc1009c5aa5f909fc7fbb7))
+* parallel in multi compilation mode ([2b5961c](https://github.com/banyudu/tsterser-webpack-plugin/commit/2b5961c18cf770e03229b24739920976e92e249a))
+* parallel on wsl ([#138](https://github.com/banyudu/tsterser-webpack-plugin/issues/138)) ([0537591](https://github.com/banyudu/tsterser-webpack-plugin/commit/053759126b3fece65af094ce1e99c9fc0aab6ca4))
+* performance ([#200](https://github.com/banyudu/tsterser-webpack-plugin/issues/200)) ([d2acd75](https://github.com/banyudu/tsterser-webpack-plugin/commit/d2acd75f4b630af38d2c272f800e755fe395b2dd))
+* preserve `[@license](https://github.com/license)` comments starting with `//` ([d3f0c81](https://github.com/banyudu/tsterser-webpack-plugin/commit/d3f0c811672920b658edaa99815de9204716fa21))
+* reduce memory usage ([abfd950](https://github.com/banyudu/tsterser-webpack-plugin/commit/abfd9506207cf392de63a0629de82145efff2361))
+* reduce memory usage ([#145](https://github.com/banyudu/tsterser-webpack-plugin/issues/145)) ([815e533](https://github.com/banyudu/tsterser-webpack-plugin/commit/815e5333b8cb88d3daa3486b31c630d183cc46eb))
+* regenerate `contenthash` when assets was uglified ([#44](https://github.com/banyudu/tsterser-webpack-plugin/issues/44)) ([7e6f8b1](https://github.com/banyudu/tsterser-webpack-plugin/commit/7e6f8b1c67fb80a179d04a0a2d9f80385a1458e8))
+* regexp for `some` comments ([#168](https://github.com/banyudu/tsterser-webpack-plugin/issues/168)) ([4c4b1f1](https://github.com/banyudu/tsterser-webpack-plugin/commit/4c4b1f1a6daa50b36d2f1359d494721e755045f1))
+* remove redundant chunkFilter ([#243](https://github.com/banyudu/tsterser-webpack-plugin/issues/243)) ([7220734](https://github.com/banyudu/tsterser-webpack-plugin/commit/722073494ae708e7cd94cdb9df26fb483e93e8de))
+* removed unnecessary dependency ([#111](https://github.com/banyudu/tsterser-webpack-plugin/issues/111)) ([bc19b72](https://github.com/banyudu/tsterser-webpack-plugin/commit/bc19b724b619fbdadc0b75eb3191b492c1f6094c))
+* respect stdout and stderr of workers and do not create warnings ([#215](https://github.com/banyudu/tsterser-webpack-plugin/issues/215)) ([5708574](https://github.com/banyudu/tsterser-webpack-plugin/commit/5708574d3337158a02d60a81275467900da5f42d))
+* revert do not run parallel mode when you have only one file ([#146](https://github.com/banyudu/tsterser-webpack-plugin/issues/146)) ([6613a97](https://github.com/banyudu/tsterser-webpack-plugin/commit/6613a9721b74a49d856daa0cb353cee4bb5c4eb4))
+* security problem ([#259](https://github.com/banyudu/tsterser-webpack-plugin/issues/259)) ([522aa2c](https://github.com/banyudu/tsterser-webpack-plugin/commit/522aa2cd4e9c4b508b268eef99572c7c808fe0b6))
+* show error message from jest-worker ([#203](https://github.com/banyudu/tsterser-webpack-plugin/issues/203)) ([3b28007](https://github.com/banyudu/tsterser-webpack-plugin/commit/3b280070cde3b233ae703fe2e0ac75b350cb2da7))
+* uglify additional assets ([100e38e](https://github.com/banyudu/tsterser-webpack-plugin/commit/100e38e0db035f6eb21bbec2bbc1f8b12aee9f60))
+* use webpack hashFunction rather than hard-code MD4 ([#213](https://github.com/banyudu/tsterser-webpack-plugin/issues/213)) ([330c1f6](https://github.com/banyudu/tsterser-webpack-plugin/commit/330c1f6cf3468fd6312e86960b272df1591f1a64))
+
+
+* `extractComments.filename` option ([974bc19](https://github.com/banyudu/tsterser-webpack-plugin/commit/974bc192c0dd584bca1c85bcc9eaa159e785a8e6))
+* `extractComments.filename` option ([825ac94](https://github.com/banyudu/tsterser-webpack-plugin/commit/825ac94711ba6c9b1c3e3e2d3af02ba3584ec3dc))
+* `warningsFilter` option ([#236](https://github.com/banyudu/tsterser-webpack-plugin/issues/236)) ([d509135](https://github.com/banyudu/tsterser-webpack-plugin/commit/d509135ce6f6274277345c0059d83f0f9d88f468))
+* code ([91642a1](https://github.com/banyudu/tsterser-webpack-plugin/commit/91642a150ee2c72d0d445a852410b8ecf647a5f0))
+* remove the `chunkFilter` option ([557781e](https://github.com/banyudu/tsterser-webpack-plugin/commit/557781ec135ab5ba776c628795f79452d0a36719))
+* **defaults:** update ([#127](https://github.com/banyudu/tsterser-webpack-plugin/issues/127)) ([edbd3e0](https://github.com/banyudu/tsterser-webpack-plugin/commit/edbd3e07566f0df57eaa4eb0d3d28da326f308ba))
+* **deps:** update ([#234](https://github.com/banyudu/tsterser-webpack-plugin/issues/234)) ([038a56b](https://github.com/banyudu/tsterser-webpack-plugin/commit/038a56b6ca1869760f6cd3338b8d5282c5b53fe7))
+
 ### [3.0.8](https://github.com/webpack-contrib/terser-webpack-plugin/compare/v3.0.7...v3.0.8) (2020-07-27)
 
 

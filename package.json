@@ -1,6 +1,6 @@
 {
   "name": "tsterser-webpack-plugin",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "TS-Terser plugin for webpack",
   "license": "MIT",
   "repository": "banyudu/tsterser-webpack-plugin",
