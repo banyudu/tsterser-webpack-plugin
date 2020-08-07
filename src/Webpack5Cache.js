@@ -30,7 +30,7 @@ export default class Cache {
     const digest = hash.digest(hashDigest);
     const cacheKeys = digest.substr(0, hashDigestLength);
 
-    return `${this.compilation.compilerPath}/TerserWebpackPlugin/${cacheKeys}/${task.file}`;
+    return `${this.compilation.compilerPath}/TSTerserWebpackPlugin/${cacheKeys}/${task.file}`;
   }
 
   get(task) {

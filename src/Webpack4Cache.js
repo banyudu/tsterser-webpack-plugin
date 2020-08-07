@@ -13,7 +13,7 @@ export default class Webpack4Cache {
   }
 
   static getCacheDirectory() {
-    return findCacheDir({ name: 'terser-webpack-plugin' }) || os.tmpdir();
+    return findCacheDir({ name: 'tsterser-webpack-plugin' }) || os.tmpdir();
   }
 
   isEnabled() {

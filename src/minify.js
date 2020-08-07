@@ -1,6 +1,15 @@
-const { minify: terserMinify } = require('terser');
+const fs = require('fs');
 
-const buildTerserOptions = ({
+const isTSTerser = fs.existsSync(require.resolve('tsterser'));
+let TSTerser;
+if (isTSTerser) {
+  TSTerser = require('tsterser');
+} else {
+  TSTerser = require('terser');
+}
+const { minify: tsterserMinify } = TSTerser;
+
+const buildTSTerserOptions = ({
   ecma,
   warnings,
   parse = {},
@@ -49,9 +58,9 @@ function isObject(value) {
   return value != null && (type === 'object' || type === 'function');
 }
 
-const buildComments = (options, terserOptions, extractedComments) => {
+const buildComments = (options, tsterserOptions, extractedComments) => {
   const condition = {};
-  const commentsOpts = terserOptions.output.comments;
+  const commentsOpts = tsterserOptions.output.comments;
   const { extractComments } = options;
 
   condition.preserve =
@@ -152,25 +161,25 @@ const minify = (options) => {
     return minifyFn({ [file]: input }, inputSourceMap);
   }
 
-  // Copy terser options
-  const terserOptions = buildTerserOptions(options.terserOptions);
+  // Copy tsterser options
+  const tsterserOptions = buildTSTerserOptions(options.tsterserOptions);
 
-  // Let terser generate a SourceMap
+  // Let tsterser generate a SourceMap
   if (inputSourceMap) {
-    terserOptions.sourceMap = { asObject: true };
+    tsterserOptions.sourceMap = { asObject: true };
   }
 
   const extractedComments = [];
 
-  terserOptions.output.comments = buildComments(
+  tsterserOptions.output.comments = buildComments(
     options,
-    terserOptions,
+    tsterserOptions,
     extractedComments
   );
 
-  const { error, map, code, warnings } = terserMinify(
+  const { error, map, code, warnings } = tsterserMinify(
     { [file]: input },
-    terserOptions
+    tsterserOptions
   );
 
   return { error, map, code, warnings, extractedComments };

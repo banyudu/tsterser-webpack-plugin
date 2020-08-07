@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import os from 'os';
 
 import { SourceMapConsumer } from 'source-map';
@@ -13,7 +14,6 @@ import {
 } from 'webpack';
 import validateOptions from 'schema-utils';
 import serialize from 'serialize-javascript';
-import terserPackageJson from 'terser/package.json';
 import pLimit from 'p-limit';
 import Worker from 'jest-worker';
 
@@ -21,18 +21,25 @@ import schema from './options.json';
 
 import { minify as minifyFn } from './minify';
 
+const isTSTerser = fs.existsSync(require.resolve('tsterser'));
+let tsterserPackageJson;
+if (isTSTerser) {
+  tsterserPackageJson = require('tsterser/package.json');
+} else {
+  tsterserPackageJson = require('terser/package.json');
+}
 const warningRegex = /\[.+:([0-9]+),([0-9]+)\]/;
 
-class TerserPlugin {
+class TSTerserPlugin {
   constructor(options = {}) {
     validateOptions(schema, options, {
-      name: 'Terser Plugin',
+      name: 'TSTerser Plugin',
       baseDataPath: 'options',
     });
 
     const {
       minify,
-      terserOptions = {},
+      tsterserOptions = {},
       test = /\.m?js(\?.*)?$/i,
       warningsFilter = () => true,
       extractComments = true,
@@ -55,7 +62,7 @@ class TerserPlugin {
       include,
       exclude,
       minify,
-      terserOptions,
+      tsterserOptions,
     };
   }
 
@@ -82,7 +89,7 @@ class TerserPlugin {
 
       if (original && original.source && requestShortener) {
         return new Error(
-          `${file} from Terser\n${error.message} [${requestShortener.shorten(
+          `${file} from TSTerser\n${error.message} [${requestShortener.shorten(
             original.source
           )}:${original.line},${original.column}][${file}:${error.line},${
             error.col
@@ -95,7 +102,7 @@ class TerserPlugin {
       }
 
       return new Error(
-        `${file} from Terser\n${error.message} [${file}:${error.line},${
+        `${file} from TSTerser\n${error.message} [${file}:${error.line},${
           error.col
         }]${
           error.stack ? `\n${error.stack.split('\n').slice(1).join('\n')}` : ''
@@ -104,10 +111,10 @@ class TerserPlugin {
     }
 
     if (error.stack) {
-      return new Error(`${file} from Terser\n${error.stack}`);
+      return new Error(`${file} from TSTerser\n${error.stack}`);
     }
 
-    return new Error(`${file} from Terser\n${error.message}`);
+    return new Error(`${file} from TSTerser\n${error.message}`);
   }
 
   static buildWarning(
@@ -152,7 +159,7 @@ class TerserPlugin {
       return null;
     }
 
-    return `Terser Plugin: ${warningMessage}${locationMessage}`;
+    return `TSTerser Plugin: ${warningMessage}${locationMessage}`;
   }
 
   static removeQueryString(filename) {
@@ -194,7 +201,7 @@ class TerserPlugin {
       input = source;
 
       if (map) {
-        if (TerserPlugin.isSourceMap(map)) {
+        if (TSTerserPlugin.isSourceMap(map)) {
           inputSourceMap = map;
         } else {
           inputSourceMap = map;
@@ -248,7 +255,7 @@ class TerserPlugin {
       if (
         (error || (warnings && warnings.length > 0)) &&
         inputSourceMap &&
-        TerserPlugin.isSourceMap(inputSourceMap)
+        TSTerserPlugin.isSourceMap(inputSourceMap)
       ) {
         sourceMap = new SourceMapConsumer(inputSourceMap);
       }
@@ -257,7 +264,7 @@ class TerserPlugin {
       // Error case: add errors, and go to next file
       if (error) {
         compilation.errors.push(
-          TerserPlugin.buildError(
+          TSTerserPlugin.buildError(
             error,
             file,
             sourceMap,
@@ -363,7 +370,7 @@ class TerserPlugin {
       // Handling warnings
       if (warnings && warnings.length > 0) {
         warnings.forEach((warning) => {
-          const builtWarning = TerserPlugin.buildWarning(
+          const builtWarning = TSTerserPlugin.buildWarning(
             warning,
             file,
             sourceMap,
@@ -389,7 +396,7 @@ class TerserPlugin {
       callback,
     };
 
-    if (TerserPlugin.isWebpack4()) {
+    if (TSTerserPlugin.isWebpack4()) {
       const {
         outputOptions: { hashSalt, hashDigest, hashDigestLength, hashFunction },
       } = compilation;
@@ -405,10 +412,13 @@ class TerserPlugin {
 
       if (this.options.cache) {
         const defaultCacheKeys = {
-          terser: terserPackageJson.version,
+          terser: tsterserPackageJson.version,
+          tsterser: tsterserPackageJson.version,
           // eslint-disable-next-line global-require
           'terser-webpack-plugin': require('../package.json').version,
           'terser-webpack-plugin-options': this.options,
+          'tsterser-webpack-plugin': require('../package.json').version,
+          'tsterser-webpack-plugin-options': this.options,
           nodeVersion: process.version,
           filename: file,
           contentHash: digest.substr(0, hashDigestLength),
@@ -421,10 +431,13 @@ class TerserPlugin {
       task.assetSource = assetSource;
 
       task.cacheKeys = {
-        terser: terserPackageJson.version,
+        terser: tsterserPackageJson.version,
+        tsterser: tsterserPackageJson.version,
         // eslint-disable-next-line global-require
         'terser-webpack-plugin': require('../package.json').version,
         'terser-webpack-plugin-options': this.options,
+        'tsterser-webpack-plugin': require('../package.json').version,
+        'tsterser-webpack-plugin-options': this.options,
       };
     }
 
@@ -432,7 +445,7 @@ class TerserPlugin {
   }
 
   async runTasks(assetNames, getTaskForAsset, cache) {
-    const availableNumberOfCores = TerserPlugin.getAvailableNumberOfCores(
+    const availableNumberOfCores = TSTerserPlugin.getAvailableNumberOfCores(
       this.options.parallel
     );
 
@@ -569,7 +582,7 @@ class TerserPlugin {
     const optimizeFn = async (compilation, chunksOrAssets) => {
       let assetNames;
 
-      if (TerserPlugin.isWebpack4()) {
+      if (TSTerserPlugin.isWebpack4()) {
         assetNames = []
           .concat(Array.from(compilation.additionalChunkAssets || []))
           .concat(
@@ -598,7 +611,7 @@ class TerserPlugin {
         compilation,
         allExtractedComments
       );
-      const CacheEngine = TerserPlugin.isWebpack4()
+      const CacheEngine = TSTerserPlugin.isWebpack4()
         ? // eslint-disable-next-line global-require
           require('./Webpack4Cache').default
         : // eslint-disable-next-line global-require
@@ -634,17 +647,19 @@ class TerserPlugin {
         });
       }
 
-      if (TerserPlugin.isWebpack4()) {
+      if (TSTerserPlugin.isWebpack4()) {
         const { mainTemplate, chunkTemplate } = compilation;
         const data = serialize({
-          terser: terserPackageJson.version,
-          terserOptions: this.options.terserOptions,
+          terser: tsterserPackageJson.version,
+          terserOptions: this.options.tsterserOptions,
+          tsterser: tsterserPackageJson.version,
+          tsterserOptions: this.options.tsterserOptions,
         });
 
         // Regenerate `contenthash` for minified assets
         for (const template of [mainTemplate, chunkTemplate]) {
           template.hooks.hashForChunk.tap(plugin, (hash) => {
-            hash.update('TerserPlugin');
+            hash.update('TSTerserPlugin');
             hash.update(data);
           });
         }
@@ -658,12 +673,14 @@ class TerserPlugin {
           compilation
         );
         const data = serialize({
-          terser: terserPackageJson.version,
-          terserOptions: this.options.terserOptions,
+          terser: tsterserPackageJson.version,
+          terserOptions: this.options.tsterserOptions,
+          tsterser: tsterserPackageJson.version,
+          tsterserOptions: this.options.tsterserOptions,
         });
 
         hooks.chunkHash.tap(plugin, (chunk, hash) => {
-          hash.update('TerserPlugin');
+          hash.update('TSTerserPlugin');
           hash.update(data);
         });
 
@@ -676,4 +693,4 @@ class TerserPlugin {
   }
 }
 
-export default TerserPlugin;
+export default TSTerserPlugin;

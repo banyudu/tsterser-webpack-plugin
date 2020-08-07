@@ -33,7 +33,7 @@
       ]
     }
   },
-  "title": "TerserPluginOptions",
+  "title": "TSTerserPluginOptions",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -95,8 +95,8 @@
       "description": "Allows you to override default minify function.",
       "instanceof": "Function"
     },
-    "terserOptions": {
-      "description": "Options for `terser`.",
+    "tsterserOptions": {
+      "description": "Options for `tsterser`.",
       "additionalProperties": true,
       "type": "object"
     },
@@ -163,7 +163,7 @@
       ]
     },
     "warningsFilter": {
-      "description": "Allow to filter `terser` warnings.",
+      "description": "Allow to filter `tsterser` warnings.",
       "instanceof": "Function"
     }
   }
