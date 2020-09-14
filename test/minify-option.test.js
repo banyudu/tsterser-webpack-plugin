@@ -35,7 +35,7 @@ describe('minify option', () => {
       },
       minify(file, inputSourceMap, minimizerOptions) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(file, minimizerOptions);
+        return require('tsterser').minify(file, minimizerOptions);
       },
     }).apply(compiler);
 
@@ -60,7 +60,7 @@ describe('minify option', () => {
       parallel: true,
       minify(file, inputSourceMap, minimizerOptions) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(file, minimizerOptions);
+        return require('tsterser').minify(file, minimizerOptions);
       },
     }).apply(compiler);
 
@@ -85,7 +85,7 @@ describe('minify option', () => {
       parallel: false,
       minify(file, inputSourceMap, minimizerOptions) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(file, minimizerOptions);
+        return require('tsterser').minify(file, minimizerOptions);
       },
     }).apply(compiler);
 
@@ -178,7 +178,7 @@ describe('minify option', () => {
       extractComments: true,
       async minify(file) {
         // eslint-disable-next-line global-require
-        const result = await require('terser').minify(file, {
+        const result = await require('tsterser').minify(file, {
           mangle: {
             reserved: ['baz'],
           },
@@ -222,7 +222,7 @@ describe('minify option', () => {
         }
 
         // eslint-disable-next-line global-require
-        return require('terser').minify(file, terserOption);
+        return require('tsterser').minify(file, terserOption);
       },
     }).apply(compiler);
 
@@ -275,7 +275,7 @@ describe('minify option', () => {
     new TerserPlugin({
       minify(file) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(file, {
+        return require('tsterser').minify(file, {
           mangle: {
             reserved: ['baz'],
           },

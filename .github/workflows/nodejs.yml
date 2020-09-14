@@ -1,4 +1,4 @@
-name: terser-webpack-plugin
+name: tsterser-webpack-plugin
 
 on:
   push:

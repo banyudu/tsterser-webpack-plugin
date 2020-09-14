@@ -1,4 +1,4 @@
-const { minify: terserMinify } = require('terser');
+const { minify: terserMinify } = require('tsterser');
 
 const buildTerserOptions = ({
   ecma,

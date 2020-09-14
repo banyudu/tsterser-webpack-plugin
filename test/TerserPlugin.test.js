@@ -396,7 +396,7 @@ describe('TerserPlugin', () => {
       parallel: true,
       minify(input) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(`${input}1()2()3()`);
+        return require('tsterser').minify(`${input}1()2()3()`);
       },
     }).apply(compiler);
 
@@ -416,7 +416,7 @@ describe('TerserPlugin', () => {
       parallel: false,
       minify(input) {
         // eslint-disable-next-line global-require
-        return require('terser').minify(`${input}1()2()3()`);
+        return require('tsterser').minify(`${input}1()2()3()`);
       },
     }).apply(compiler);
 

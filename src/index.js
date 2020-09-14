@@ -13,7 +13,7 @@ import RequestShortener from 'webpack/lib/RequestShortener';
 
 import validateOptions from 'schema-utils';
 import serialize from 'serialize-javascript';
-import terserPackageJson from 'terser/package.json';
+import terserPackageJson from 'tsterser/package.json';
 import pLimit from 'p-limit';
 import Worker from 'jest-worker';
 
