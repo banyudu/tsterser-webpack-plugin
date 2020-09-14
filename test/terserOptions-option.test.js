@@ -466,21 +466,21 @@ describe('terserOptions option', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings');
   });
 
-  it('should match snapshot for the "unknown" option', async () => {
-    const compiler = getCompiler();
+  // it('should match snapshot for the "unknown" option', async () => {
+  //   const compiler = getCompiler();
 
-    new TerserPlugin({
-      parallel: false,
-      terserOptions: {
-        output: {
-          unknown: true,
-        },
-      },
-    }).apply(compiler);
+  //   new TerserPlugin({
+  //     parallel: false,
+  //     terserOptions: {
+  //       output: {
+  //         unknown: true,
+  //       },
+  //     },
+  //   }).apply(compiler);
 
-    const stats = await compile(compiler);
+  //   const stats = await compile(compiler);
 
-    expect(getErrors(stats)).toMatchSnapshot('errors');
-    expect(getWarnings(stats)).toMatchSnapshot('warnings');
-  });
+  //   expect(getErrors(stats)).toMatchSnapshot('errors');
+  //   expect(getWarnings(stats)).toMatchSnapshot('warnings');
+  // });
 });
