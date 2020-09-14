@@ -1,75 +1,35 @@
-// eslint-disable-next-line import/extensions,import/no-unresolved
-import getLazyHashedEtag from 'webpack/lib/cache/getLazyHashedEtag';
-import serialize from 'serialize-javascript';
-
-import { util } from 'webpack';
-
 export default class Cache {
-  // eslint-disable-next-line no-unused-vars
-  constructor(compilation, ignored) {
-    this.compilation = compilation;
+  constructor(compilation) {
+    this.cache = compilation.getCache('TerserWebpackPlugin');
   }
 
-  isEnabled() {
-    return Boolean(this.compilation.cache);
+  async get(cacheData) {
+    // eslint-disable-next-line no-param-reassign
+    cacheData.eTag =
+      cacheData.eTag || Array.isArray(cacheData.inputSource)
+        ? cacheData.inputSource
+            .map((item) => this.cache.getLazyHashedEtag(item))
+            .reduce((previousValue, currentValue) =>
+              this.cache.mergeEtags(previousValue, currentValue)
+            )
+        : this.cache.getLazyHashedEtag(cacheData.inputSource);
+
+    return this.cache.getPromise(cacheData.name, cacheData.eTag);
   }
 
-  createCacheIdent(task) {
-    const {
-      outputOptions: { hashSalt, hashDigest, hashDigestLength, hashFunction },
-    } = this.compilation;
+  async store(cacheData) {
+    let data;
 
-    const hash = util.createHash(hashFunction);
-
-    if (hashSalt) {
-      hash.update(hashSalt);
+    if (cacheData.target === 'comments') {
+      data = cacheData.output;
+    } else {
+      data = {
+        source: cacheData.source,
+        extractedCommentsSource: cacheData.extractedCommentsSource,
+        commentsFilename: cacheData.commentsFilename,
+      };
     }
 
-    hash.update(serialize(task.cacheKeys));
-
-    const digest = hash.digest(hashDigest);
-    const cacheKeys = digest.substr(0, hashDigestLength);
-
-    return `${this.compilation.compilerPath}/TerserWebpackPlugin/${cacheKeys}/${task.file}`;
-  }
-
-  get(task) {
-    // eslint-disable-next-line no-param-reassign
-    task.cacheIdent = task.cacheIdent || this.createCacheIdent(task);
-    // eslint-disable-next-line no-param-reassign
-    task.cacheETag = task.cacheETag || getLazyHashedEtag(task.assetSource);
-
-    return new Promise((resolve, reject) => {
-      this.compilation.cache.get(
-        task.cacheIdent,
-        task.cacheETag,
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else if (result) {
-            resolve(result);
-          } else {
-            reject();
-          }
-        }
-      );
-    });
-  }
-
-  store(task, data) {
-    return new Promise((resolve, reject) => {
-      this.compilation.cache.store(
-        task.cacheIdent,
-        task.cacheETag,
-        data,
-        (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
-        }
-      );
-    });
+    return this.cache.storePromise(cacheData.name, cacheData.eTag, data);
   }
 }

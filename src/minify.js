@@ -2,7 +2,6 @@ const { minify: terserMinify } = require('terser');
 
 const buildTerserOptions = ({
   ecma,
-  warnings,
   parse = {},
   compress = {},
   mangle,
@@ -40,7 +39,6 @@ const buildTerserOptions = ({
   nameCache,
   safari10,
   toplevel,
-  warnings,
 });
 
 function isObject(value) {
@@ -49,13 +47,11 @@ function isObject(value) {
   return value != null && (type === 'object' || type === 'function');
 }
 
-const buildComments = (options, terserOptions, extractedComments) => {
+const buildComments = (extractComments, terserOptions, extractedComments) => {
   const condition = {};
-  const commentsOpts = terserOptions.output.comments;
-  const { extractComments } = options;
+  const { comments } = terserOptions.output;
 
-  condition.preserve =
-    typeof commentsOpts !== 'undefined' ? commentsOpts : false;
+  condition.preserve = typeof comments !== 'undefined' ? comments : false;
 
   if (typeof extractComments === 'boolean' && extractComments) {
     condition.extract = 'some';
@@ -77,8 +73,7 @@ const buildComments = (options, terserOptions, extractedComments) => {
   } else {
     // No extract
     // Preserve using "commentsOpts" or "some"
-    condition.preserve =
-      typeof commentsOpts !== 'undefined' ? commentsOpts : 'some';
+    condition.preserve = typeof comments !== 'undefined' ? comments : 'some';
     condition.extract = false;
   }
 
@@ -145,15 +140,21 @@ const buildComments = (options, terserOptions, extractedComments) => {
   };
 };
 
-const minify = (options) => {
-  const { file, input, inputSourceMap, minify: minifyFn } = options;
+async function minify(options) {
+  const {
+    name,
+    input,
+    inputSourceMap,
+    minify: minifyFn,
+    minimizerOptions,
+  } = options;
 
   if (minifyFn) {
-    return minifyFn({ [file]: input }, inputSourceMap);
+    return minifyFn({ [name]: input }, inputSourceMap, minimizerOptions);
   }
 
   // Copy terser options
-  const terserOptions = buildTerserOptions(options.terserOptions);
+  const terserOptions = buildTerserOptions(minimizerOptions);
 
   // Let terser generate a SourceMap
   if (inputSourceMap) {
@@ -161,20 +162,18 @@ const minify = (options) => {
   }
 
   const extractedComments = [];
+  const { extractComments } = options;
 
   terserOptions.output.comments = buildComments(
-    options,
+    extractComments,
     terserOptions,
     extractedComments
   );
 
-  const { error, map, code, warnings } = terserMinify(
-    { [file]: input },
-    terserOptions
-  );
+  const result = await terserMinify({ [name]: input }, terserOptions);
 
-  return { error, map, code, warnings, extractedComments };
-};
+  return { ...result, extractedComments };
+}
 
 function transform(options) {
   // 'use strict' => this === undefined (Clean Scope)
@@ -189,13 +188,7 @@ function transform(options) {
     `'use strict'\nreturn ${options}`
   )(exports, require, module, __filename, __dirname);
 
-  const result = minify(options);
-
-  if (result.error) {
-    throw result.error;
-  } else {
-    return result;
-  }
+  return minify(options);
 }
 
 module.exports.minify = minify;

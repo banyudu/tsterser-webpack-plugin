@@ -175,7 +175,6 @@ it('validation', () => {
       terserOptions: {
         // eslint-disable-next-line no-undefined
         ecma: undefined,
-        warnings: false,
         parse: {},
         compress: {},
         mangle: true,
@@ -313,14 +312,6 @@ it('validation', () => {
 
   expect(() => {
     new TerserPlugin({ extractComments: { unknown: true } });
-  }).toThrowErrorMatchingSnapshot();
-
-  expect(() => {
-    new TerserPlugin({ warningsFilter() {} });
-  }).not.toThrow();
-
-  expect(() => {
-    new TerserPlugin({ warningsFilter: true });
   }).toThrowErrorMatchingSnapshot();
 
   expect(() => {

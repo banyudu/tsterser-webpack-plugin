@@ -10,11 +10,9 @@ export default function getCompiler(options = {}) {
       : {
           mode: 'production',
           bail: true,
-          cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
           entry: path.resolve(__dirname, '../fixtures/entry.js'),
           optimization: {
             minimize: false,
-            noEmitOnErrors: false,
           },
           output: {
             pathinfo: false,

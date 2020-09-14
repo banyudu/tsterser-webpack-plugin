@@ -13,11 +13,13 @@ import TerserPlugin from '../src/index';
 
 import {
   BrokenCodePlugin,
+  ModifyExistingAsset,
   compile,
   countPlugins,
   getCompiler,
   getErrors,
   getWarnings,
+  readAsset,
   readsAssets,
   removeCache,
 } from './helpers';
@@ -62,9 +64,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name]-1.js',
           chunkFilename: '[id]-1.[name].js',
         },
@@ -76,9 +78,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name]-2.js',
           chunkFilename: '[id]-2.[name].js',
         },
@@ -91,9 +93,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/import-export/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/import-export/entry.js'),
         output: {
-          path: `${__dirname}/dist-MultiCompiler`,
+          path: path.resolve(__dirname, './dist-MultiCompiler'),
           filename: '[name]-3.js',
           chunkFilename: '[id]-3.[name].js',
         },
@@ -157,9 +159,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name]-1.js',
           chunkFilename: '[id]-1.[name].js',
         },
@@ -171,9 +173,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name]-2.js',
           chunkFilename: '[id]-2.[name].js',
         },
@@ -186,9 +188,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/import-export/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/import-export/entry.js'),
         output: {
-          path: `${__dirname}/dist-MultiCompiler`,
+          path: path.resolve(__dirname, './dist-MultiCompiler'),
           filename: '[name]-3.js',
           chunkFilename: '[id]-3.[name].js',
         },
@@ -230,9 +232,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist-0`,
+          path: path.resolve(__dirname, './dist-0'),
           filename: '[name].js',
           chunkFilename: '[id].[name].js',
         },
@@ -245,9 +247,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist-1`,
+          path: path.resolve(__dirname, './dist-1'),
           filename: '[name].js',
           chunkFilename: '[id].[name].js',
         },
@@ -260,9 +262,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist-2`,
+          path: path.resolve(__dirname, './dist-2'),
           filename: '[name].js',
           chunkFilename: '[id].[name].js',
         },
@@ -275,9 +277,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist-3`,
+          path: path.resolve(__dirname, './dist-3'),
           filename: '[name].js',
           chunkFilename: '[id].[name].js',
         },
@@ -290,9 +292,9 @@ describe('TerserPlugin', () => {
         mode: 'production',
         bail: true,
         cache: getCompiler.isWebpack4() ? false : { type: 'memory' },
-        entry: `${__dirname}/fixtures/entry.js`,
+        entry: path.resolve(__dirname, './fixtures/entry.js'),
         output: {
-          path: `${__dirname}/dist-4`,
+          path: path.resolve(__dirname, './dist-4'),
           filename: '[name].js',
           chunkFilename: '[id].[name].js',
         },
@@ -441,13 +443,19 @@ describe('TerserPlugin', () => {
 
       const compiler = getCompiler({
         entry: {
-          js: `${__dirname}/fixtures/entry.js`,
-          mjs: `${__dirname}/fixtures/entry.mjs`,
-          importExport: `${__dirname}/fixtures/import-export/entry.js`,
-          AsyncImportExport: `${__dirname}/fixtures/async-import-export/entry.js`,
+          js: path.resolve(__dirname, './fixtures/entry.js'),
+          mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+          importExport: path.resolve(
+            __dirname,
+            './fixtures/import-export/entry.js'
+          ),
+          AsyncImportExport: path.resolve(
+            __dirname,
+            './fixtures/async-import-export/entry.js'
+          ),
         },
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name].[contenthash].js',
           chunkFilename: '[id].[name].[contenthash].js',
         },
@@ -477,13 +485,19 @@ describe('TerserPlugin', () => {
       const mockUpdateHashForChunk = jest.fn();
       const compiler = getCompiler({
         entry: {
-          js: `${__dirname}/fixtures/entry.js`,
-          mjs: `${__dirname}/fixtures/entry.mjs`,
-          importExport: `${__dirname}/fixtures/import-export/entry.js`,
-          AsyncImportExport: `${__dirname}/fixtures/async-import-export/entry.js`,
+          js: path.resolve(__dirname, './fixtures/entry.js'),
+          mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+          importExport: path.resolve(
+            __dirname,
+            './fixtures/import-export/entry.js'
+          ),
+          AsyncImportExport: path.resolve(
+            __dirname,
+            './fixtures/async-import-export/entry.js'
+          ),
         },
         output: {
-          path: `${__dirname}/dist`,
+          path: path.resolve(__dirname, './dist'),
           filename: '[name].[contenthash].js',
           chunkFilename: '[id].[name].[contenthash].js',
         },
@@ -577,48 +591,6 @@ describe('TerserPlugin', () => {
     ).toMatchSnapshot();
   });
 
-  it('buildWarning method', () => {
-    expect(
-      TerserPlugin.buildWarning('Warning [test.js:1,1]')
-    ).toMatchSnapshot();
-    expect(
-      TerserPlugin.buildWarning('Warning [test.js:1,1]', 'test.js')
-    ).toMatchSnapshot();
-    expect(
-      TerserPlugin.buildWarning(
-        'Warning [test.js:1,1]',
-        'test.js',
-        new SourceMapConsumer(rawSourceMap)
-      )
-    ).toMatchSnapshot();
-    expect(
-      TerserPlugin.buildWarning(
-        'Warning [test.js:1,1]',
-        'test.js',
-        new SourceMapConsumer(rawSourceMap),
-        new RequestShortener('/example.com/www/js/')
-      )
-    ).toMatchSnapshot();
-    expect(
-      TerserPlugin.buildWarning(
-        'Warning [test.js:1,1]',
-        'test.js',
-        new SourceMapConsumer(rawSourceMap),
-        new RequestShortener('/example.com/www/js/'),
-        () => true
-      )
-    ).toMatchSnapshot();
-    expect(
-      TerserPlugin.buildWarning(
-        'Warning [test.js:1,1]',
-        'test.js',
-        new SourceMapConsumer(rawSourceMap),
-        new RequestShortener('/example.com/www/js/'),
-        () => false
-      )
-    ).toMatchSnapshot();
-  });
-
   it('should respect the hash options #1', async () => {
     const compiler = getCompiler({
       output: {
@@ -672,8 +644,12 @@ describe('TerserPlugin', () => {
   it('should emit an error on a broken code in parallel mode', async () => {
     const compiler = getCompiler({
       entry: {
-        one: `${__dirname}/fixtures/entry.js`,
-        two: `${__dirname}/fixtures/entry.js`,
+        one: path.resolve(__dirname, './fixtures/entry.js'),
+        two: path.resolve(__dirname, './fixtures/entry.js'),
+      },
+      optimization: {
+        minimize: false,
+        noEmitOnErrors: false,
       },
     });
 
@@ -691,8 +667,12 @@ describe('TerserPlugin', () => {
   it('should emit an error on a broken code in not parallel mode', async () => {
     const compiler = getCompiler({
       entry: {
-        one: `${__dirname}/fixtures/entry.js`,
-        two: `${__dirname}/fixtures/entry.js`,
+        one: path.resolve(__dirname, './fixtures/entry.js'),
+        two: path.resolve(__dirname, './fixtures/entry.js'),
+      },
+      optimization: {
+        minimize: false,
+        noEmitOnErrors: false,
       },
     });
 
@@ -724,8 +704,8 @@ describe('TerserPlugin', () => {
 
     const compiler = getCompiler({
       entry: {
-        one: `${__dirname}/fixtures/empty.js`,
-        two: `${__dirname}/fixtures/empty.js`,
+        one: path.resolve(__dirname, './fixtures/empty.js'),
+        two: path.resolve(__dirname, './fixtures/empty.js'),
       },
     });
 
@@ -770,8 +750,8 @@ describe('TerserPlugin', () => {
 
     const compiler = getCompiler({
       entry: {
-        one: `${__dirname}/fixtures/empty.js`,
-        two: `${__dirname}/fixtures/empty.js`,
+        one: path.resolve(__dirname, './fixtures/empty.js'),
+        two: path.resolve(__dirname, './fixtures/empty.js'),
       },
     });
 
@@ -818,18 +798,18 @@ describe('TerserPlugin', () => {
     expect(getWarnings(stats)).toMatchSnapshot('warnings');
   });
 
-  // TODO uncomment after the new major release
-  it.skip('should work with child compilation', async () => {
+  it('should work with child compilation', async () => {
     const compiler = getCompiler({
       entry: path.resolve(__dirname, 'fixtures/worker-loader.js'),
-      devtool: 'source-map',
+      devtool: false,
       module: {
         rules: [
           {
             test: /\.worker\.js$/i,
             loader: 'worker-loader',
             options: {
-              name: '[name].js',
+              filename: '[name].worker.js',
+              chunkFilename: '[name].chunk.worker.js',
             },
           },
         ],
@@ -843,5 +823,631 @@ describe('TerserPlugin', () => {
     expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
     expect(getErrors(stats)).toMatchSnapshot('errors');
     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+  });
+
+  it('should work and show minimized assets in stats', async () => {
+    const compiler = getCompiler();
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+    const stringStats = stats.toString({ relatedAssets: true });
+    const printedCompressed = stringStats.match(/\[minimized]/g);
+
+    expect(printedCompressed ? printedCompressed.length : 0).toBe(
+      getCompiler.isWebpack4() ? 0 : 1
+    );
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getErrors(stats)).toMatchSnapshot('errors');
+    expect(getWarnings(stats)).toMatchSnapshot('warnings');
+  });
+
+  it('should work and show related assets in stats', async () => {
+    const compiler = getCompiler({
+      entry: { comments: path.resolve(__dirname, './fixtures/comments-4.js') },
+      devtool: 'source-map',
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    expect(stats.toString().indexOf('2 related asset') !== -1).toBe(
+      !getCompiler.isWebpack4()
+    );
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getErrors(stats)).toMatchSnapshot('errors');
+    expect(getWarnings(stats)).toMatchSnapshot('warnings');
+  });
+
+  it('should work and generate real content hash', async () => {
+    if (getCompiler.isWebpack4()) {
+      expect(true).toBe(true);
+    } else {
+      const compiler = getCompiler({
+        entry: {
+          app: path.resolve(__dirname, './fixtures/async-import-export/entry'),
+        },
+        output: {
+          pathinfo: false,
+          path: path.resolve(__dirname, 'dist'),
+          filename: '[name].[contenthash].[chunkhash].[fullhash].js',
+          chunkFilename: '[name].[contenthash].[chunkhash].[fullhash].js',
+        },
+        optimization: {
+          minimize: false,
+          realContentHash: true,
+        },
+      });
+
+      new TerserPlugin().apply(compiler);
+
+      const stats = await compile(compiler);
+      const {
+        compilation: {
+          assets,
+          options: { output },
+        },
+      } = stats;
+
+      for (const assetName of Object.keys(assets)) {
+        const [, webpackHash] = assetName.match(/^.+?\.(.+?)\..+$/);
+        const { hashDigestLength, hashDigest, hashFunction } = output;
+        const cryptoHash = crypto
+          .createHash(hashFunction)
+          .update(readAsset(assetName, compiler, stats))
+          .digest(hashDigest)
+          .slice(0, hashDigestLength);
+
+        expect(webpackHash).toBe(cryptoHash);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getErrors(stats)).toMatchSnapshot('errors');
+      expect(getWarnings(stats)).toMatchSnapshot('warnings');
+    }
+  });
+
+  it('should work and use memory cache when the "cache" option is "true"', async () => {
+    const compiler = getCompiler({
+      entry: {
+        js: path.resolve(__dirname, './fixtures/entry.js'),
+        mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+        importExport: path.resolve(
+          __dirname,
+          './fixtures/import-export/entry.js'
+        ),
+        AsyncImportExport: path.resolve(
+          __dirname,
+          './fixtures/async-import-export/entry.js'
+        ),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(5);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(5);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(0);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(0);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work and use memory cache when the "cache" option is "true" and the asset has been changed', async () => {
+    const compiler = getCompiler({
+      entry: {
+        js: path.resolve(__dirname, './fixtures/entry.js'),
+        mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+        importExport: path.resolve(
+          __dirname,
+          './fixtures/import-export/entry.js'
+        ),
+        AsyncImportExport: path.resolve(
+          __dirname,
+          './fixtures/async-import-export/entry.js'
+        ),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(5);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(5);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    new ModifyExistingAsset({ name: 'js.js' }).apply(compiler);
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(1);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(1);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work with source map and use memory cache when the "cache" option is "true"', async () => {
+    const compiler = getCompiler({
+      devtool: 'source-map',
+      entry: {
+        js: path.resolve(__dirname, './fixtures/entry.js'),
+        mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+        importExport: path.resolve(
+          __dirname,
+          './fixtures/import-export/entry.js'
+        ),
+        AsyncImportExport: path.resolve(
+          __dirname,
+          './fixtures/async-import-export/entry.js'
+        ),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(10);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(10);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(0);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(0);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work with source map and use memory cache when the "cache" option is "true" and the asset has been changed', async () => {
+    const compiler = getCompiler({
+      devtool: 'source-map',
+      entry: {
+        js: path.resolve(__dirname, './fixtures/entry.js'),
+        mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+        importExport: path.resolve(
+          __dirname,
+          './fixtures/import-export/entry.js'
+        ),
+        AsyncImportExport: path.resolve(
+          __dirname,
+          './fixtures/async-import-export/entry.js'
+        ),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(10);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(10);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    new ModifyExistingAsset({ name: 'js.js' }).apply(compiler);
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(2);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(2);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work, extract comments in different files and use memory cache memory cache when the "cache" option is "true"', async () => {
+    const compiler = getCompiler({
+      entry: {
+        one: path.resolve(__dirname, './fixtures/comments.js'),
+        two: path.resolve(__dirname, './fixtures/comments-2.js'),
+        three: path.resolve(__dirname, './fixtures/comments-3.js'),
+        four: path.resolve(__dirname, './fixtures/comments-4.js'),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(10);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(10);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(0);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(0);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work, extract comments in different files and use memory cache memory cache when the "cache" option is "true" and the asset has been changed', async () => {
+    const compiler = getCompiler({
+      entry: {
+        one: path.resolve(__dirname, './fixtures/comments.js'),
+        two: path.resolve(__dirname, './fixtures/comments-2.js'),
+        three: path.resolve(__dirname, './fixtures/comments-3.js'),
+        four: path.resolve(__dirname, './fixtures/comments-4.js'),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(10);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(10);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    new ModifyExistingAsset({ name: 'two.js', comment: true }).apply(compiler);
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(2);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(2);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work, extract comments in one file and use memory cache memory cache when the "cache" option is "true"', async () => {
+    const compiler = getCompiler({
+      entry: {
+        one: path.resolve(__dirname, './fixtures/comments.js'),
+        two: path.resolve(__dirname, './fixtures/comments-2.js'),
+        three: path.resolve(__dirname, './fixtures/comments-3.js'),
+        four: path.resolve(__dirname, './fixtures/comments-4.js'),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin({
+      extractComments: {
+        filename: 'licenses.txt',
+      },
+    }).apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(6);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(6);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(0);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(0);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work, extract comments in one file and use memory cache memory cache when the "cache" option is "true" and the asset has been changed', async () => {
+    const compiler = getCompiler({
+      entry: {
+        one: path.resolve(__dirname, './fixtures/comments.js'),
+        two: path.resolve(__dirname, './fixtures/comments-2.js'),
+        three: path.resolve(__dirname, './fixtures/comments-3.js'),
+        four: path.resolve(__dirname, './fixtures/comments-4.js'),
+      },
+      cache: true,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin({
+      extractComments: {
+        filename: 'licenses.txt',
+      },
+    }).apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(6);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(6);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    new ModifyExistingAsset({ name: 'two.js', comment: true }).apply(compiler);
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(2);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(2);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
+  });
+
+  it('should work and do not use memory cache when the "cache" option is "false"', async () => {
+    const compiler = getCompiler({
+      entry: {
+        js: path.resolve(__dirname, './fixtures/entry.js'),
+        mjs: path.resolve(__dirname, './fixtures/entry.mjs'),
+        importExport: path.resolve(
+          __dirname,
+          './fixtures/import-export/entry.js'
+        ),
+        AsyncImportExport: path.resolve(
+          __dirname,
+          './fixtures/async-import-export/entry.js'
+        ),
+      },
+      cache: false,
+      output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
+        chunkFilename: '[id].[name].js',
+      },
+    });
+
+    new TerserPlugin().apply(compiler);
+
+    const stats = await compile(compiler);
+
+    if (getCompiler.isWebpack4()) {
+      expect(
+        Object.keys(stats.compilation.assets).filter(
+          (assetName) => stats.compilation.assets[assetName].emitted
+        ).length
+      ).toBe(5);
+    } else {
+      expect(stats.compilation.emittedAssets.size).toBe(5);
+    }
+
+    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+    expect(getWarnings(stats)).toMatchSnapshot('errors');
+    expect(getErrors(stats)).toMatchSnapshot('warnings');
+
+    await new Promise(async (resolve) => {
+      const newStats = await compile(compiler);
+
+      if (getCompiler.isWebpack4()) {
+        expect(
+          Object.keys(newStats.compilation.assets).filter(
+            (assetName) => newStats.compilation.assets[assetName].emitted
+          ).length
+        ).toBe(5);
+      } else {
+        expect(newStats.compilation.emittedAssets.size).toBe(5);
+      }
+
+      expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
+      expect(getWarnings(newStats)).toMatchSnapshot('errors');
+      expect(getErrors(newStats)).toMatchSnapshot('warnings');
+
+      resolve();
+    });
   });
 });

@@ -1,3 +1,5 @@
+import path from 'path';
+
 import TerserPlugin from '../src/index';
 
 import {
@@ -16,14 +18,13 @@ describe('terserOptions option', () => {
 
   it('should match snapshot for the "ecma" option with the "5" value', async () => {
     const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/ecma-5/entry.js`,
+      entry: path.resolve(__dirname, './fixtures/ecma-5/entry.js'),
     });
 
     new TerserPlugin({
       terserOptions: {
         ecma: 5,
         mangle: false,
-        warnings: true,
         output: {
           beautify: true,
         },
@@ -39,14 +40,13 @@ describe('terserOptions option', () => {
 
   it('should match snapshot for the "ecma" option with the "6" value', async () => {
     const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/ecma-6/entry.js`,
+      entry: path.resolve(__dirname, './fixtures/ecma-6/entry.js'),
     });
 
     new TerserPlugin({
       terserOptions: {
         ecma: 6,
         mangle: false,
-        warnings: true,
         output: {
           beautify: true,
         },
@@ -62,14 +62,13 @@ describe('terserOptions option', () => {
 
   it('should match snapshot for the "ecma" option with the "7" value', async () => {
     const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/ecma-7/entry.js`,
+      entry: path.resolve(__dirname, './fixtures/ecma-7/entry.js'),
     });
 
     new TerserPlugin({
       terserOptions: {
         ecma: 7,
         mangle: false,
-        warnings: true,
         output: {
           beautify: true,
         },
@@ -85,53 +84,16 @@ describe('terserOptions option', () => {
 
   it('should match snapshot for the "ecma" option with the "8" value', async () => {
     const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/ecma-8/entry.js`,
+      entry: path.resolve(__dirname, './fixtures/ecma-8/entry.js'),
     });
 
     new TerserPlugin({
       terserOptions: {
         ecma: 8,
         mangle: false,
-        warnings: true,
         output: {
           beautify: true,
         },
-      },
-    }).apply(compiler);
-
-    const stats = await compile(compiler);
-
-    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
-    expect(getErrors(stats)).toMatchSnapshot('errors');
-    expect(getWarnings(stats)).toMatchSnapshot('warnings');
-  });
-
-  it('should match snapshot for the "warnings" option with the "false" value', async () => {
-    const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/unreachable-code.js`,
-    });
-
-    new TerserPlugin({
-      terserOptions: {
-        warnings: false,
-      },
-    }).apply(compiler);
-
-    const stats = await compile(compiler);
-
-    expect(readsAssets(compiler, stats)).toMatchSnapshot('assets');
-    expect(getErrors(stats)).toMatchSnapshot('errors');
-    expect(getWarnings(stats)).toMatchSnapshot('warnings');
-  });
-
-  it('should match snapshot for the "warnings" option with the "true" value', async () => {
-    const compiler = getCompiler({
-      entry: `${__dirname}/fixtures/unreachable-code.js`,
-    });
-
-    new TerserPlugin({
-      terserOptions: {
-        warnings: true,
       },
     }).apply(compiler);
 
