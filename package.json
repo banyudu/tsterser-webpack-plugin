@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "description": "TS-Terser plugin for webpack",
   "license": "MIT",
-  "repository": "banyudu/tsterser-webpack-plugin",
+  "repository": "https://github.com/banyudu/tsterser-webpack-plugin",
   "author": "webpack Contrib Team",
   "homepage": "https://github.com/banyudu/tsterser-webpack-plugin",
   "bugs": "https://github.com/banyudu/tsterser-webpack-plugin/issues",
